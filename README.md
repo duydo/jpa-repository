@@ -44,17 +44,22 @@ List<User> users = repo.findAll(User.class)
 User user = repo.findById(User.class, 1L);
 </code>
 
-**Find Users by specification**
+**Find Users has name "Duy"**
 <pre><code>
-//Find users has name "Duy"
-Specification<User> hasName = new AbstractSpecification<User>() {
-			@Override
-			public Predicate toPredicate(final CriteriaBuilder cb, final CriteriaQuery<?> cq, final Root<T> root) {
-				return cb.equal(root.get(propertyName), "Duy");
-			}
-		}; 		
+Specification<User> hasName = Specifications.equal("name", "Duy");
 List<User> users = repo.findBySpecification(User.class, hasName).asList();
 
-//Sort result ascending by name:
+//we can sort result ascending by name:
+List<User> users = repo.findBySpecification(User.class, hasName).sortAscending("name").asList();
+</code></pre>
+
+**We can combine specifications with AND, OR, NOT**
+<pre><code>
+//Find users has name "Duy" and age is "28"
+Specification<User> hasName = Specifications.equal("name", "Duy");
+Specification<User> hasAge28 = Specifications.equal("age", 28);
+List<User> users = repo.findBySpecification(User.class, **hasName.and(hasAge28)**).asList();
+
+//we can sort result ascending by name:
 List<User> users = repo.findBySpecification(User.class, hasName).sortAscending("name").asList();
 </code></pre>
