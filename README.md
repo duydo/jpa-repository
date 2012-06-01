@@ -27,7 +27,7 @@ Usage
     }
 </code></pre>
 
-**Create an instance of <code>Repository</code>**
+**First, we need to create an instance of <code>Repository</code>**
 <pre><code>
 EntityManager em = ...;
 Repository repo = new JPARepository(em);
