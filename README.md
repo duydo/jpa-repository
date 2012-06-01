@@ -13,6 +13,7 @@ Usage
     public class User extends EntityObject<Long> {
     	private String name;
     	private Integer age;
+    	private String email;
     
     	public User() {}
     
@@ -43,10 +44,17 @@ List<User> users = repo.findAll(User.class)
 User user = repo.findById(User.class, 1L);
 </code>
 
-**Find all Users has name "ABC"**
-
+**Find Users by specification**
 <pre><code>
-//Create a specification
-Specification<User> hasName = Specifications.equal("name", "Duy Do"); 
+//Find users has name "Duy"
+Specification<User> hasName = new AbstractSpecification<User>() {
+			@Override
+			public Predicate toPredicate(final CriteriaBuilder cb, final CriteriaQuery<?> cq, final Root<T> root) {
+				return cb.equal(root.get(propertyName), "Duy");
+			}
+		}; 		
 List<User> users = repo.findBySpecification(User.class, hasName).asList();
+
+//Sort result ascending by name:
+List<User> users = repo.findBySpecification(User.class, hasName).sortAscending("name").asList();
 </code></pre>
