@@ -53,7 +53,7 @@ repo.remove(user);
 
 Query with Specification
 ------------------------
-**Find unique user with email is abc@example.com**
+**Find unique user has email abc@example.com**
 <pre><code>
 Specification<User> hasEmail = Specifications.equal("email", "abc@example.com");
 User user = repo.findBySpecification(User.class, hasEmail).asSingle();
