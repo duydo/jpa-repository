@@ -55,5 +55,5 @@ List<User> users = repo.findBySpecification(User.class, hasName).asList();
 //Find users has name "Duy" and age is "28"
 Specification<User> hasName = Specifications.equal("name", "Duy");
 Specification<User> hasAge28 = Specifications.equal("age", 28);
-List<User> users = repo.findBySpecification(User.class, **hasName.and(hasAge28)**).asList();
+List<User> users = repo.findBySpecification(User.class, hasName.and(hasAge28)).asList();
 </code></pre>
