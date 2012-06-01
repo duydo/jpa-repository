@@ -31,26 +31,30 @@ Usage
 <pre><code>
 EntityManager em = ...;
 Repository repo = new JPARepository(em);
+
 </code></pre>
-**Find all instances of User**
 
-<code>
+**CRUD query**
+
+<pre><code>
+//find all users
 List<User> users = repo.findAll(User.class)
-</code>
-	
-**Find an User by Id**
 
-<code>
+//find user by id
 User user = repo.findById(User.class, 1L);
-</code>
 
-**Find Users has name "Duy"**
+</code></pre>
+
+Query with Specification
+------------------------
+
+**Find all users has name "Duy"**
 <pre><code>
 Specification<User> hasName = Specifications.equal("name", "Duy");
 List<User> users = repo.findBySpecification(User.class, hasName).asList();
 </code></pre>
 
-**We can combine specifications with AND, OR, NOT**
+**We can combine specifications with AND, OR**
 <pre><code>
 //Find users has name "Duy" and age is "28"
 Specification<User> hasName = Specifications.equal("name", "Duy");
