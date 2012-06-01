@@ -8,7 +8,7 @@ Usage
 
 **Create an example entity User**
 
-<code>
+<pre><code>
     @Entity
     public class User extends EntityObject<Long> {
     	private String name;
@@ -24,13 +24,13 @@ Usage
         //getter/setter here
     
     }
-</code>
+</code></pre>
 
 **Create an instance of <code>Repository<code>**
-
-    EntityManager em = ...;
-    Repository repo = new JPARepository(em);
-    
+<pre><code>
+EntityManager em = ...;
+Repository repo = new JPARepository(em);
+</code></pre>
 **Find all instances of User**
 
 <code>
@@ -40,13 +40,13 @@ List<User> users = repo.findAll(User.class)
 **Find an User by Id**
 
 <code>
-User user = repo.findById(1L);
+User user = repo.findById(User.class, 1L);
 </code>
 
 **Find all Users has name "ABC"**
 
-<code>
+<pre><code>
 //Create a specification
 Specification<User> hasName = Specifications.equal("name", "Duy Do"); 
 List<User> users = repo.findBySpecification(User.class, hasName).asList();
-</code>
+</code></pre>
