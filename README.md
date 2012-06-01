@@ -65,7 +65,7 @@ Specification<User> hasName = Specifications.equal("name", "Duy");
 List<User> users = repo.findBySpecification(User.class, hasName).asList();
 </code></pre>
 
-**Find all users which name is not "Duy"*
+**Find all users which name is not "Duy"**
 <pre><code>
 Specification<User> notName = Specifications.equal("name", "Duy").not();
 List<User> users = repo.findBySpecification(User.class, notName).asList();
