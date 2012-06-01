@@ -26,7 +26,7 @@ Usage
     }
 </code></pre>
 
-**Create an instance of <code>Repository<code>**
+**Create an instance of <code>Repository</code>**
 <pre><code>
 EntityManager em = ...;
 Repository repo = new JPARepository(em);
