@@ -79,18 +79,19 @@ Specification<User> hasAge28 = Specifications.equal("age", 28);
 List<User> users = repo.findBySpecification(User.class, hasName.and(hasAge28)).asList();
 </code></pre>
 
-Sorting and Paging:
-------------------
+Sorting
+-------
+Sorting by using method <code>sortXXX()</code> of <code>SepecificationResult</code>
 
-**Sorting by using method <code>sortXXX()</code> of <code>SepecificationResult</code>**
-
-**Find all users has name "Duy" and sort ascending by name **
+**Find all users has name "Duy" and sort ascending by name**
 <pre><code>
 Specification<User> hasName = Specifications.equal("name", "Duy");
 List<User> users = repo.findBySpecification(User.class, hasName).sortAscending("name").asList();
 </code></pre>
 
-**Paging by using method <code>skip(int count)</code> and <code>get(int count)</code> of <code>SepecificationResult</code>**
+Paging
+------
+Paging by using method <code>skip(int count)</code> and <code>get(int count)</code> of <code>SepecificationResult</code>
 
 **Find 10 users has name "Duy"**
 <pre><code>
