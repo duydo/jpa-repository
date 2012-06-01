@@ -48,9 +48,6 @@ User user = repo.findById(User.class, 1L);
 <pre><code>
 Specification<User> hasName = Specifications.equal("name", "Duy");
 List<User> users = repo.findBySpecification(User.class, hasName).asList();
-
-//we can sort result ascending by name:
-List<User> users = repo.findBySpecification(User.class, hasName).sortAscending("name").asList();
 </code></pre>
 
 **We can combine specifications with AND, OR, NOT**
@@ -59,7 +56,4 @@ List<User> users = repo.findBySpecification(User.class, hasName).sortAscending("
 Specification<User> hasName = Specifications.equal("name", "Duy");
 Specification<User> hasAge28 = Specifications.equal("age", 28);
 List<User> users = repo.findBySpecification(User.class, **hasName.and(hasAge28)**).asList();
-
-//we can sort result ascending by name:
-List<User> users = repo.findBySpecification(User.class, hasName).sortAscending("name").asList();
 </code></pre>
