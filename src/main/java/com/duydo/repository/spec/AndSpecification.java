@@ -28,10 +28,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.duydo.repository.AbstractSpecification;
-import com.duydo.repository.Specification;
-
-
 /**
  * @author Duy Do
  * @version $Id$
@@ -41,16 +37,13 @@ public class AndSpecification<T> extends AbstractSpecification<T> {
 	private final Specification<T> specification1;
 	private final Specification<T> specification2;
 
-	public AndSpecification(final Specification<T> specification1,
-			final Specification<T> specification2) {
+	public AndSpecification(final Specification<T> specification1, final Specification<T> specification2) {
 		this.specification1 = specification1;
 		this.specification2 = specification2;
 	}
 
 	@Override
-	public Predicate toPredicate(CriteriaBuilder cb, CriteriaQuery<?> cq,
-			Root<T> root) {
-		return cb.and(specification1.toPredicate(cb, cq, root),
-				specification2.toPredicate(cb, cq, root));
+	public Predicate toPredicate(CriteriaBuilder cb, CriteriaQuery<?> cq, Root<T> root) {
+		return cb.and(specification1.toPredicate(cb, cq, root), specification2.toPredicate(cb, cq, root));
 	}
 }

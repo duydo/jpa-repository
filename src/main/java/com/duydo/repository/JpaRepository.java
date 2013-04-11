@@ -32,6 +32,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import com.duydo.repository.spec.Specification;
+import com.duydo.repository.spec.SpecificationBuilder;
+
 /**
  * Implementation of {@link Repository} interface using JPA 2.
  * 

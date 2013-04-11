@@ -7,6 +7,8 @@ package com.duydo.repository;
 
 import java.io.Serializable;
 
+import com.duydo.repository.spec.Specification;
+
 /**
  * @author Duy Do
  * @version $Id$

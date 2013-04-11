@@ -9,6 +9,8 @@ import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
+import com.duydo.repository.spec.Specification;
+
 /**
  * @author Duy Do
  * @version $Id$

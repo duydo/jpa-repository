@@ -17,8 +17,8 @@ import org.junit.Test;
 
 import com.duydo.repository.JpaRepository;
 import com.duydo.repository.Repository;
-import com.duydo.repository.Specification;
-import com.duydo.repository.SpecificationBuilder;
+import com.duydo.repository.spec.Specification;
+import com.duydo.repository.spec.SpecificationBuilder;
 
 /**
  * @author Duy Do
