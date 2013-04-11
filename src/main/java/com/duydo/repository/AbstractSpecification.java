@@ -21,12 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.duydo.jpa.specification;
+package com.duydo.repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import com.duydo.repository.spec.AndSpecification;
+import com.duydo.repository.spec.NotSpecification;
+import com.duydo.repository.spec.OrSpecification;
+
 
 /**
  * @author Duy Do
@@ -35,11 +40,8 @@ import javax.persistence.criteria.Root;
 @SuppressWarnings("serial")
 public abstract class AbstractSpecification<T> implements Specification<T> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public abstract Predicate toPredicate(final CriteriaBuilder cb,
-			final CriteriaQuery<?> cq, final Root<T> root);
+	public abstract Predicate toPredicate(CriteriaBuilder cb,
+			CriteriaQuery<?> cq, Root<T> root);
 
 	/**
 	 * {@inheritDoc}

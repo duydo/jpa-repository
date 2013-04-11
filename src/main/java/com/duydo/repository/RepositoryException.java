@@ -3,7 +3,7 @@
  * 
  * Copyright 2011 Duy Do. All rights reserved.
  */
-package com.duydo.jpa.repository;
+package com.duydo.repository;
 
 /**
  * @author Duy Do (duydo)

@@ -21,18 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.duydo.jpa.repository;
+package com.duydo.repository;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityTransaction;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
-import com.duydo.jpa.specification.Specification;
 
 /**
  * Implementation of {@link Repository} interface using JPA 2.
@@ -42,59 +40,67 @@ import com.duydo.jpa.specification.Specification;
  */
 public class JpaRepository implements Repository {
 
-	@PersistenceContext
-	private EntityManager entityManager;
+	private EntityManager em;
 
-	public JpaRepository(final EntityManager entityManager) {
-		setEntityManager(entityManager);
+	public JpaRepository() {}
+
+	public JpaRepository(final EntityManager em) {
+		setEntityManager(em);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T> T findById(final Class<T> type, final Serializable id) {
+	public <T> T find(final Class<T> type, final Serializable id) {
 		return getEntityManager().find(type, id);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T> List<T> findAll(final Class<T> type) {
-		return findBySpecification(type, null).asList();
+	public <T> SpecificationResult<T> find(final Class<T> clazz, final Specification<T> spec) {
+		return new DefaultSpecificationResult<T>(clazz, spec, getEntityManager());
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> SpecificationResult<T> find(final T example) {
+		final Map<String, Object> propertyValues = Reflections.notNullPropertyValues(example);
+
+		Specification<T> spec = null;
+		for (Map.Entry<String, Object> entry : propertyValues.entrySet()) {
+			Specification<T> tmp = SpecificationBuilder.forProperty(entry.getKey()).equal(entry.getValue()).build();
+			if (spec == null) {
+				spec = tmp;
+			} else {
+				spec = spec.and(tmp);
+			}
+		}
+
+		return find((Class<T>) example.getClass(), spec);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T> SpecificationResult<T> findBySpecification(final Class<T> type,
-			final Specification<T> specification) {
-		return new SpecificationResultImpl<T>(type, specification,
-				getEntityManager());
+	public <T> long count(final Class<T> clazz) {
+		return count(clazz, null);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T> long countAll(final Class<T> type) {
-		return countBySpecification(type, null);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public <T> long countBySpecification(final Class<T> type,
-			final Specification<T> specification) {
+	public <T> long count(final Class<T> type, final Specification<T> specification) {
 		final CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
 		final CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		final Root<T> root = cq.from(type);
 		cq.select(cb.count(root));
+
 		if (specification != null) {
 			cq.where(specification.toPredicate(cb, cq, root));
 		}
 		try {
-			return getEntityManager().createQuery(cq).getSingleResult()
-					.longValue();
-		} catch (final Exception e) {
+			return getEntityManager().createQuery(cq).getSingleResult().longValue();
+		} catch (Exception e) {
 			return 0;
 		}
 	}
@@ -102,11 +108,24 @@ public class JpaRepository implements Repository {
 	/**
 	 * {@inheritDoc}
 	 */
-	public <T> void save(final T t) throws RepositoryException {
+	public <T> void save(final T t) {
 		try {
 			getEntityManager().persist(t);
-		} catch (final Exception e) {
-			throw repositoryException(e);
+		} catch (Exception e) {
+			throw newRepositoryException(e);
+		}
+	}
+
+	public <T> void saveAndFlush(T t) {
+		EntityTransaction tx = null;
+		try {
+			tx = getEntityManager().getTransaction();
+			tx.begin();
+			getEntityManager().persist(t);
+			tx.commit();
+		} catch (Exception e) {
+			tx.rollback();
+			throw newRepositoryException(e);
 		}
 	}
 
@@ -117,7 +136,24 @@ public class JpaRepository implements Repository {
 		try {
 			return getEntityManager().merge(t);
 		} catch (final Exception e) {
-			throw repositoryException(e);
+			throw newRepositoryException(e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public <T> T updateAndFlush(final T t) {
+		EntityTransaction tx = null;
+		try {
+			tx = getEntityManager().getTransaction();
+			tx.begin();
+			final T updated = getEntityManager().merge(t);
+			tx.commit();
+			return updated;
+		} catch (Exception e) {
+			tx.rollback();
+			throw newRepositoryException(e);
 		}
 	}
 
@@ -129,12 +165,26 @@ public class JpaRepository implements Repository {
 			getEntityManager().refresh(t);
 			getEntityManager().remove(t);
 		} catch (final Exception e) {
-			throw repositoryException(e);
+			throw newRepositoryException(e);
+		}
+	}
+
+	public <T> void removeAndFlush(T t) {
+		EntityTransaction tx = null;
+		try {
+			tx = getEntityManager().getTransaction();
+			tx.begin();
+			getEntityManager().refresh(t);
+			getEntityManager().remove(t);
+			tx.commit();
+		} catch (Exception e) {
+			tx.rollback();
+			throw newRepositoryException(e);
 		}
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Returns {@link EntityManager}.
 	 */
 	public Object getDelegate() {
 		return getEntityManager();
@@ -143,24 +193,26 @@ public class JpaRepository implements Repository {
 	/**
 	 * @return the entityManager
 	 */
-	public EntityManager getEntityManager() {
-		return entityManager;
+	protected EntityManager getEntityManager() {
+		if (em == null) {
+			throw new NullPointerException("entityManager must be set before executing any operations");
+		}
+		return em;
 	}
 
 	/**
 	 * @param entityManager the entityManager to set
-	 * @throws NullPointerException if entityManager parameter is null
 	 */
 	public void setEntityManager(final EntityManager entityManager) {
-		if (entityManager == null) {
-			throw new NullPointerException(
-					"entityManager must be set before executing any operations");
-		}
-		this.entityManager = entityManager;
+		this.em = entityManager;
 	}
 
-	protected RepositoryException repositoryException(final Exception e) {
+	protected RepositoryException newRepositoryException(final Exception e) {
 		// TODO:FIXME: better translate exception
 		return new RepositoryException(e.getMessage(), e.getCause());
+	}
+
+	public <T> SpecificationResult<T> find(Class<T> clazz) {
+		return find(clazz, null);
 	}
 }

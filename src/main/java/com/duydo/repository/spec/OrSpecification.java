@@ -21,12 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.duydo.jpa.specification;
+package com.duydo.repository.spec;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import com.duydo.repository.AbstractSpecification;
+import com.duydo.repository.Specification;
+
+
 
 /**
  * @author Duy Do

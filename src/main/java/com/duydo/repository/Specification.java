@@ -1,5 +1,5 @@
 /*
- * @(#)OrSepecification.java May 7, 2011 9:20:26 AM
+ * @(#)JpaSpecification.java May 6, 2011 4:55:18 PM
  * 
  * Copyright (c) 2011 Duy Do
  * 
@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.duydo.jpa.specification;
+package com.duydo.repository;
+
+import java.io.Serializable;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -32,22 +34,13 @@ import javax.persistence.criteria.Root;
  * @author Duy Do
  * @version $Id$
  */
-@SuppressWarnings("serial")
-public class AndSpecification<T> extends AbstractSpecification<T> {
-	private final Specification<T> specification1;
-	private final Specification<T> specification2;
+public interface Specification<T> extends Serializable {
+	
+	Specification<T> or(Specification<T> specification);
 
-	public AndSpecification(final Specification<T> specification1,
-			final Specification<T> specification2) {
-		this.specification1 = specification1;
-		this.specification2 = specification2;
-	}
+	Specification<T> and(Specification<T> specification);
 
-	@Override
-	public Predicate toPredicate(final CriteriaBuilder cb,
-			final CriteriaQuery<?> cq, final Root<T> root) {
-		return cb.and(specification1.toPredicate(cb, cq, root),
-				specification2.toPredicate(cb, cq, root));
-	}
+	Specification<T> not();
 
+	Predicate toPredicate(CriteriaBuilder cb, CriteriaQuery<?> cq, Root<T> root);
 }

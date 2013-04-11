@@ -7,22 +7,16 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>generic-repository</name>
+	<name>jpa-repository</name>
 	<url>http://maven.apache.org</url>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<wicket.version>1.4.17</wicket.version>
 		<spring.version>3.0.5.RELEASE</spring.version>
 		<hibernate.core.version>3.6.3.Final</hibernate.core.version>
 		<hibernate.jpa2.api.version>1.0.0.Final</hibernate.jpa2.api.version>
-		<c3p0.version>0.9.1.2</c3p0.version>
-		<mysql.connector.version>5.1.12</mysql.connector.version>
-		<querydsl.version>2.1.2</querydsl.version>
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.0-api</artifactId>
@@ -34,18 +28,17 @@
 			<version>${hibernate.core.version}</version>
 		</dependency>
 
-		<!-- <dependency>
-			<groupId>com.mysema.querydsl</groupId>
-			<artifactId>querydsl-apt</artifactId>
-			<version>${querydsl.version}</version>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.mysema.querydsl</groupId>
-			<artifactId>querydsl-jpa</artifactId>
-			<version>${querydsl.version}</version>
-		</dependency>  -->
+		<!-- <dependency> <groupId>com.mysema.querydsl</groupId> <artifactId>querydsl-apt</artifactId> 
+			<version>${querydsl.version}</version> <scope>provided</scope> </dependency> 
+			<dependency> <groupId>com.mysema.querydsl</groupId> <artifactId>querydsl-jpa</artifactId> 
+			<version>${querydsl.version}</version> </dependency> -->
 
 		<dependency>
 			<groupId>hsqldb</groupId>
@@ -53,6 +46,7 @@
 			<version>1.8.0.10</version>
 			<scope>test</scope>
 		</dependency>
+
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -122,23 +116,11 @@
 					<downloadSources>true</downloadSources>
 				</configuration>
 			</plugin>
-			<!-- <plugin>
-				<groupId>com.mysema.maven</groupId>
-				<artifactId>maven-apt-plugin</artifactId>
-				<version>1.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>process</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target/generated-sources/java</outputDirectory>
-							<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin> -->
+			<!-- <plugin> <groupId>com.mysema.maven</groupId> <artifactId>maven-apt-plugin</artifactId> 
+				<version>1.0</version> <executions> <execution> <goals> <goal>process</goal> 
+				</goals> <configuration> <outputDirectory>target/generated-sources/java</outputDirectory> 
+				<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor> </configuration> 
+				</execution> </executions> </plugin> -->
 		</plugins>
 	</build>
-
 </project>

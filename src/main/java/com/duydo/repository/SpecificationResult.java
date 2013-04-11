@@ -21,35 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.duydo.jpa.repository;
+package com.duydo.repository;
 
 import java.util.List;
 
+/**
+ * TODO: document
+ * 
+ * @author Duy Do
+ * @version $Id$
+ * @param <T>
+ */
 public interface SpecificationResult<T> {
 
-	SpecificationResult<T> get(int count);
-
-	SpecificationResult<T> skip(int count);
-
 	/**
-	 * Sort result by ascending.
+	 * Set the number of results to retrieve.
 	 */
-	SpecificationResult<T> sortAscending(String expression);
+	SpecificationResult<T> size(int size);
 
 	/**
-	 * Sort result by descending.
+	 * Set the from position to start retrieve.
 	 */
-	SpecificationResult<T> sortDescending(String expression);
+	SpecificationResult<T> from(int from);
 
 	/**
-	 * Return single entity.
+	 * Sort results by ascending.
+	 */
+	SpecificationResult<T> ascending(String propertyName);
+
+	/**
+	 * Sort results by descending.
+	 */
+	SpecificationResult<T> descending(String propertyName);
+
+	/**
+	 * Set a query property or hint.
+	 */
+	SpecificationResult<T> hint(String name, Object value);
+
+	/**
+	 * Return single result.
 	 * 
 	 * @return the found instance of T or null if not found
 	 */
-	T asSingle();
+	T single();
 
 	/**
-	 * @return instances of T list or empty list
+	 * @return list of the results or empty if not result found.
 	 */
-	List<T> asList();
+	List<T> list();
 }

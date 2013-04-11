@@ -1,5 +1,5 @@
 /*
- * @(#)JpaSpecification.java May 6, 2011 4:55:18 PM
+ * @(#)OrSepecification.java May 7, 2011 9:20:26 AM
  * 
  * Copyright (c) 2011 Duy Do
  * 
@@ -21,25 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.duydo.jpa.specification;
-
-import java.io.Serializable;
+package com.duydo.repository.spec;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.duydo.repository.AbstractSpecification;
+import com.duydo.repository.Specification;
+
+
 /**
  * @author Duy Do
  * @version $Id$
  */
-public interface Specification<T> extends Serializable {
-	Predicate toPredicate(CriteriaBuilder cb, CriteriaQuery<?> cq, Root<T> root);
+@SuppressWarnings("serial")
+public class AndSpecification<T> extends AbstractSpecification<T> {
+	private final Specification<T> specification1;
+	private final Specification<T> specification2;
 
-	Specification<T> or(Specification<T> specification);
+	public AndSpecification(final Specification<T> specification1,
+			final Specification<T> specification2) {
+		this.specification1 = specification1;
+		this.specification2 = specification2;
+	}
 
-	Specification<T> and(Specification<T> specification);
-
-	Specification<T> not();
+	@Override
+	public Predicate toPredicate(CriteriaBuilder cb, CriteriaQuery<?> cq,
+			Root<T> root) {
+		return cb.and(specification1.toPredicate(cb, cq, root),
+				specification2.toPredicate(cb, cq, root));
+	}
 }

@@ -15,8 +15,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.duydo.jpa.specification.Specification;
-import com.duydo.jpa.specification.Specifications;
+import com.duydo.repository.JpaRepository;
+import com.duydo.repository.Repository;
+import com.duydo.repository.Specification;
+import com.duydo.repository.SpecificationBuilder;
 
 /**
  * @author Duy Do
@@ -29,8 +31,7 @@ public class RepositoryTest {
 
 	@Before
 	public void before() {
-		em = Persistence.createEntityManagerFactory("test")
-				.createEntityManager();
+		em = Persistence.createEntityManagerFactory("test").createEntityManager();
 		repository = new JpaRepository(em);
 		tx = em.getTransaction();
 		tx.begin();
@@ -50,7 +51,7 @@ public class RepositoryTest {
 
 	@Test
 	public void findUserById() {
-		User user = repository.findById(User.class, 1L);
+		User user = repository.find(User.class, 1L);
 		Assert.assertNotNull(user);
 		Assert.assertTrue(1L == user.getId());
 		Assert.assertEquals("Sam", user.getName());
@@ -58,29 +59,39 @@ public class RepositoryTest {
 
 	@Test
 	public void countAllShouldReturn6() {
-		Assert.assertEquals(6, repository.countAll(User.class));
+		Assert.assertEquals(6, repository.count(User.class));
 	}
 
 	@Test
 	public void countUsersHasAge28ShouldReturn2() {
-		final Specification<User> age28 = Specifications.equal("age", 28);
-		Assert.assertEquals(2,
-				repository.countBySpecification(User.class, age28));
+		// final Specification<User> age28 = Specifications.equal("age", 28);
+
+		Specification<User> age28 = SpecificationBuilder.forProperty("age").equal(28).build();
+		Assert.assertEquals(2, repository.count(User.class, age28));
 	}
 
 	@Test
 	public void findUsingLikeShouldReturn2() {
-		final Specification<User> hasT = Specifications.like("name", "T%");
-		List<User> users = repository.findBySpecification(User.class, hasT)
-				.asList();
+		final Specification<User> hasT = SpecificationBuilder.forProperty("name").like("T%").build();
+		List<User> users = repository.find(User.class, hasT).list();
 		Assert.assertEquals(2, users.size());
 	}
 
 	public void findAndPaging() {
-		final Specification<User> hasT = Specifications.like("name", "T%");
-		List<User> users = repository.findBySpecification(User.class, hasT).get(1)
-				.asList();
+		final Specification<User> hasT = SpecificationBuilder.forProperty("name").like("T%").build();
+		List<User> users = repository.find(User.class, hasT).size(1).list();
 		Assert.assertEquals(1, users.size());
+	}
+
+	@Test
+	public void findByExample() {
+		User user = new User();
+		user.setName("Duy");
+
+		List<User> users = repository.find(user).list();
+		for (User u : users) {
+			System.out.println(u);
+		}
 	}
 
 	@Test
@@ -95,10 +106,10 @@ public class RepositoryTest {
 
 	@Test
 	public void deleteUserShouldReturnNull() {
-		User user = repository.findById(User.class, 1L);
+		User user = repository.find(User.class, 1L);
 		repository.remove(user);
 
-		User old = repository.findById(User.class, 1L);
+		User old = repository.find(User.class, 1L);
 		Assert.assertNull(old);
 	}
 }

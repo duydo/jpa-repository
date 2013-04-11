@@ -3,9 +3,11 @@
  */
 package com.duydo.jpa.repository;
 
-import javax.persistence.Entity;
+import java.io.Serializable;
 
-import com.duydo.jpa.domain.EntityObject;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 /**
  * @author Duy Do
@@ -13,7 +15,10 @@ import com.duydo.jpa.domain.EntityObject;
  */
 @SuppressWarnings("serial")
 @Entity
-public class User extends EntityObject<Long> {
+public class User implements Serializable {
+	@Id
+	@GeneratedValue
+	private Long id;
 	private String name;
 	private Integer age;
 
@@ -38,6 +43,10 @@ public class User extends EntityObject<Long> {
 
 	public void setAge(final Integer age) {
 		this.age = age;
+	}
+
+	public long getId() {
+		return id;
 	}
 
 	/**

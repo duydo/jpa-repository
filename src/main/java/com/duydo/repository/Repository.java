@@ -21,12 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.duydo.jpa.repository;
+package com.duydo.repository;
 
 import java.io.Serializable;
-import java.util.List;
-
-import com.duydo.jpa.specification.Specification;
 
 /**
  * @author Duy Do
@@ -42,27 +39,33 @@ public interface Repository {
 	 * @throws IllegalArgumentException if <code>clazz</code> is does not denote
 	 *         an entity or <code>id</code> is null
 	 */
-	<T> T findById(Class<T> clazz, Serializable id);
+	<T> T find(Class<T> clazz, Serializable id);
 
 	/**
 	 * Find by a given specification.
 	 * 
 	 * @param clazz the entity class
-	 * @param specification the specification
+	 * @param spec the specification
 	 * @return the <code>SpecificationResult</code> instance
 	 * @throws IllegalArgumentException if <code>clazz</code> is does not denote
 	 *         an entity
 	 */
-	<T> SpecificationResult<T> findBySpecification(Class<T> clazz,
-			Specification<T> specification);
+	<T> SpecificationResult<T> find(Class<T> clazz, Specification<T> spec);
 
 	/**
 	 * Find all instances of T entity.
 	 * 
 	 * @param clazz the entity class
-	 * @return the list of T instances
+	 * @return the <code>SpecificationResult</code> instance
 	 */
-	<T> List<T> findAll(Class<T> clazz);
+	<T> SpecificationResult<T> find(Class<T> clazz);
+
+	/**
+	 * Finds entities by example.
+	 * 
+	 * @return the <code>SpecificationResult</code> instance
+	 */
+	<T> SpecificationResult<T> find(T example);
 
 	/**
 	 * Count all entities of T entity.
@@ -70,15 +73,15 @@ public interface Repository {
 	 * @param clazz the entity class
 	 * @return number of entities
 	 */
-	<T> long countAll(Class<T> clazz);
+	<T> long count(Class<T> clazz);
 
 	/**
 	 * Count entities by a given specification.
 	 * 
 	 * @param clazz the entity class
-	 * @param specification the specification
+	 * @param spec the specification
 	 */
-	<T> long countBySpecification(Class<T> clazz, Specification<T> specification);
+	<T> long count(Class<T> clazz, Specification<T> spec);
 
 	/*
 	 * EXECUTE OPERATIONS
@@ -91,12 +94,34 @@ public interface Repository {
 	<T> void save(T t);
 
 	/**
+	 * Save and flush entity into database.
+	 * 
+	 * @throws RepositoryException if entity can not be saved
+	 */
+	<T> void saveAndFlush(T t);
+
+	/**
 	 * Update an existed entity.
 	 * 
 	 * @return instance of T
 	 * @throws RepositoryException if entity can not be updated
 	 */
 	<T> T update(T t);
+
+	/**
+	 * Update an existed entity then flush it into database.
+	 * 
+	 * @return instance of T
+	 * @throws RepositoryException if entity can not be updated
+	 */
+	<T> T updateAndFlush(T t);
+
+	/**
+	 * Delete an entity.
+	 * 
+	 * @throws RepositoryException if entity can not be deleted.
+	 */
+	<T> void removeAndFlush(T t);
 
 	/**
 	 * Delete an entity.
@@ -111,5 +136,5 @@ public interface Repository {
 	 * 
 	 * @return underlying provider object for Repository
 	 */
-	public Object getDelegate();
+	Object getDelegate();
 }
