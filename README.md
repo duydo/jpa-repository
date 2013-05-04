@@ -1,7 +1,7 @@
 JPA Repository
 ==============
 
-Updated: The usage below is out up date, I put some junit tests with new changes under test source folder you can check to see how to use it.
+Updated: The usage below is out up date, I put some junit tests with new changes under src/test you can check to see how to use it.
 -------
 
 
