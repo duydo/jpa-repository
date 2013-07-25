@@ -84,6 +84,13 @@ public class RepositoryTest {
 	}
 
 	@Test
+	public void findWithOp() {
+		final Specification<User> hasT = SpecificationBuilder.forProperty("age").greaterThan(28).or().lessThanOrEqualTo(1).build();
+		List<User> users = repository.find(User.class, hasT).list();
+		Assert.assertEquals(3, users.size());
+	}
+
+	@Test
 	public void findByExample() {
 		User user = new User();
 		user.setName("Duy");
