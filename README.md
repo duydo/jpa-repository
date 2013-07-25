@@ -1,6 +1,10 @@
 JPA Repository
 ==============
 
+Updated: The usage below is out up date, I put some junit tests with new changes under src/test you can check to see how to use it.
+-------
+
+
 Repository programming model with JPA 2 and [Specification](http://en.wikipedia.org/wiki/Specification_pattern) pattern provides a simple and easy way to build the data access layer.
 
 Usage
