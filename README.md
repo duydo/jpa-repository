@@ -4,112 +4,130 @@ Repository programming model with JPA 2 and [Specification](http://en.wikipedia.
 
 Usage
 =====
+<pre>
+<code>
+/*
+ * @(#)RepositoryTest.java Jun 8, 2011 11:21:36 AM
+ * 
+ * Copyright 2011 Duy Do. All rights reserved.
+ */
+package com.duydo.jpa.repository;
 
-Updated: The usage below is out of date, I put some junit tests with new changes under src/test you can check to see how to use it.
+import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-**Create an example entity User**
+import com.duydo.repository.JpaRepository;
+import com.duydo.repository.Repository;
+import com.duydo.repository.spec.Specification;
+import com.duydo.repository.spec.SpecificationBuilder;
 
-<pre><code>
-    @Entity
-    public class User extends EntityObject<Long> {
-    	private String name;
-    	private Integer age;
-    	private String email;
-    
-    	public User() {}
-        //getter/setter here
-    
-    }
-</code></pre>
+/**
+ * @author Duy Do
+ * @version $Id$
+ */
+public class RepositoryTest {
+	private Repository repository;
+	private EntityManager em;
+	private EntityTransaction tx;
 
-**First, we need to create an instance of <code>Repository</code>**
-<pre><code>
-EntityManager em = ...;
-Repository repo = new JPARepository(em);
+	@Before
+	public void before() {
+		em = Persistence.createEntityManagerFactory("test").createEntityManager();
+		repository = new JpaRepository(em);
+		tx = em.getTransaction();
+		tx.begin();
+		createUser("Sam", 52);
+		createUser("Lien", 48);
+		createUser("Duy", 28);
+		createUser("Thuy", 28);
+		createUser("Trang", 21);
+		createUser("An", 1);
+		tx.commit();
+	}
 
-</code></pre>
+	private void createUser(final String name, final int age) {
+		User u = new User(name, age);
+		repository.save(u);
+	}
 
-**Basic Query**
+	@Test
+	public void findUserById() {
+		User user = repository.find(User.class, 1L);
+		Assert.assertNotNull(user);
+		Assert.assertTrue(1L == user.getId());
+		Assert.assertEquals("Sam", user.getName());
+	}
 
-<pre><code>
-//find all users
-List<User> users = repo.findAll(User.class)
+	@Test
+	public void countAllShouldReturn6() {
+		Assert.assertEquals(6, repository.count(User.class));
+	}
 
-//find user by id
-User user = repo.findById(User.class, 1L);
+	@Test
+	public void countUsersHasAge28ShouldReturn2() {
+		// final Specification<User> age28 = Specifications.equal("age", 28);
 
-//create
-User user = new User();
-repo.save(user);
+		Specification<User> age28 = SpecificationBuilder.forProperty("age").equal(28).build();
+		Assert.assertEquals(2, repository.count(User.class, age28));
+	}
 
-//update
-User user = repo.findById(User.class, 1L);
-user.setName("Duy Do");
-repo.update(user);
+	@Test
+	public void findUsingLikeShouldReturn2() {
+		final Specification<User> hasT = SpecificationBuilder.forProperty("name").like("T%").build();
+		List<User> users = repository.find(User.class, hasT).list();
+		Assert.assertEquals(2, users.size());
+	}
 
-// delete
-repo.remove(user);
+	public void findAndPaging() {
+		final Specification<User> hasT = SpecificationBuilder.forProperty("name").like("T%").build();
+		List<User> users = repository.find(User.class, hasT).size(1).list();
+		Assert.assertEquals(1, users.size());
+	}
 
-</code></pre>
+	@Test
+	public void findWithOp() {
+		final Specification<User> hasT = SpecificationBuilder.forProperty("age").greaterThan(28).or().lessThanOrEqualTo(1).build();
+		List<User> users = repository.find(User.class, hasT).list();
+		Assert.assertEquals(3, users.size());
+	}
 
-Query with Specification
-------------------------
-**Find unique user has email abc@example.com**
-<pre><code>
-Specification<User> hasEmail = Specifications.equal("email", "abc@example.com");
-User user = repo.findBySpecification(User.class, hasEmail).asSingle();
-</code></pre>
+	@Test
+	public void findByExample() {
+		User user = new User();
+		user.setName("Duy");
 
-**Find all users has name "Duy"**
-<pre><code>
-Specification<User> hasName = Specifications.equal("name", "Duy");
-List<User> users = repo.findBySpecification(User.class, hasName).asList();
-</code></pre>
+		List<User> users = repository.find(user).list();
+		for (User u : users) {
+			System.out.println(u);
+		}
+	}
 
-**Find all users which name is not "Duy"**
-<pre><code>
-Specification<User> notName = Specifications.equal("name", "Duy").not();
-List<User> users = repo.findBySpecification(User.class, notName).asList();
-</code></pre>
+	@Test
+	public void createUser() {
+		User user = new User("Duy Do", 28);
+		tx.begin();
+		repository.save(user);
+		tx.commit();
+		Assert.assertNotNull(user);
+		Assert.assertNotNull(user.getId());
+	}
 
-**We can combine specifications with AND, OR**
-<pre><code>
-//Find users has name "Duy" and age is "28"
-Specification<User> hasName = Specifications.equal("name", "Duy");
-Specification<User> hasAge28 = Specifications.equal("age", 28);
-List<User> users = repo.findBySpecification(User.class, hasName.and(hasAge28)).asList();
-</code></pre>
+	@Test
+	public void deleteUserShouldReturnNull() {
+		User user = repository.find(User.class, 1L);
+		repository.remove(user);
 
-Sorting
--------
-Sorting by using method <code>sortXXX()</code> of <code>SepecificationResult</code>
+		User old = repository.find(User.class, 1L);
+		Assert.assertNull(old);
+	}
+}
 
-**Find all users has name "Duy" and sort ascending by name**
-<pre><code>
-Specification<User> hasName = Specifications.equal("name", "Duy");
-List<User> users = repo.findBySpecification(User.class, hasName).sortAscending("name").asList();
-</code></pre>
-
-Paging
-------
-Paging by using method <code>skip(int count)</code> and <code>get(int count)</code> of <code>SepecificationResult</code>
-
-**Find 10 users has name "Duy"**
-<pre><code>
-Specification<User> hasName = Specifications.equal("name", "Duy");
-List<User> users = repo.findBySpecification(User.class, hasName).get(10).asList();
-</code></pre>
-
-**Find all users has name "Duy" but skip 10 first users**
-<pre><code>
-Specification<User> hasName = Specifications.equal("name", "Duy");
-List<User> users = repo.findBySpecification(User.class, hasName).skip(10).asList();
-</code></pre>
-
-**Find 20 users has name "Duy" but skip 10 first users**
-<pre><code>
-Specification<User> hasName = Specifications.equal("name", "Duy");
-List<User> users = repo.findBySpecification(User.class, hasName).skip(10).get(20).asList();
-</code></pre>
+</code>
+</pre>
