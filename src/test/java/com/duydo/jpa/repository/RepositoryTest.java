@@ -13,6 +13,7 @@ import javax.persistence.Persistence;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.duydo.repository.JpaRepository;
@@ -25,12 +26,12 @@ import com.duydo.repository.spec.SpecificationBuilder;
  * @version $Id$
  */
 public class RepositoryTest {
-	private Repository repository;
-	private EntityManager em;
-	private EntityTransaction tx;
+	private static Repository repository;
+	private static EntityManager em;
+	private static EntityTransaction tx;
 
-	@Before
-	public void before() {
+	@BeforeClass
+	public static void before() {
 		em = Persistence.createEntityManagerFactory("test").createEntityManager();
 		repository = new JpaRepository(em);
 		tx = em.getTransaction();
@@ -44,7 +45,7 @@ public class RepositoryTest {
 		tx.commit();
 	}
 
-	private void createUser(final String name, final int age) {
+	private static void  createUser(final String name, final int age) {
 		User u = new User(name, age);
 		repository.save(u);
 	}
@@ -109,6 +110,7 @@ public class RepositoryTest {
 		tx.commit();
 		Assert.assertNotNull(user);
 		Assert.assertNotNull(user.getId());
+        repository.removeAndFlush(user);
 	}
 
 	@Test
