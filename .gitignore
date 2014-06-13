@@ -1,2 +1,7 @@
 target
-
+.idea
+.settings
+.project
+.classpath
+jpa-repository.iml
+*.class
