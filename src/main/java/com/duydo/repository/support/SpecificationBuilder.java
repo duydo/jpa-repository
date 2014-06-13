@@ -3,7 +3,10 @@
  * 
  * Copyright (c) 2012 Duy Do
  */
-package com.duydo.repository.spec;
+package com.duydo.repository.support;
+
+import com.duydo.repository.spec.AbstractSpecification;
+import com.duydo.repository.spec.Specification;
 
 import java.util.Collection;
 
@@ -155,7 +158,7 @@ public class SpecificationBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> void build(Specification<T> spec) {
+	protected <T> void build(Specification<T> spec) {
 		if (this.spec == null) {
 			this.spec = spec;
 		} else {
@@ -168,7 +171,7 @@ public class SpecificationBuilder {
 	}
 
 	@SuppressWarnings("unchecked")
-	private final <T, V> Path<V> path(Root<T> root) {
+	protected final <T, V> Path<V> path(Root<T> root) {
 		if (path == null) {
 			if (property.indexOf('.') == -1) {
 				path = root.get(property);

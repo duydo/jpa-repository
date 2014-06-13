@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2012 Duy Do
  */
-package com.duydo.repository;
+package com.duydo.repository.support;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

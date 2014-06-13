@@ -21,10 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.duydo.repository;
+package com.duydo.repository.support;
 
+import com.duydo.repository.Repository;
+import com.duydo.repository.RepositoryException;
+import com.duydo.repository.SpecificationResult;
 import com.duydo.repository.spec.Specification;
-import com.duydo.repository.spec.SpecificationBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -35,7 +37,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Implementation of {@link Repository} interface using JPA 2.
+ * Implementation of {@link com.duydo.repository.Repository} interface using JPA 2.
  *
  * @author Duy Do
  * @version $Id$

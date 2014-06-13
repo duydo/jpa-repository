@@ -23,10 +23,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.duydo.repository.JpaRepository;
+import com.duydo.repository.support.JpaRepository;
 import com.duydo.repository.Repository;
 import com.duydo.repository.spec.Specification;
-import com.duydo.repository.spec.SpecificationBuilder;
+import com.duydo.repository.support.SpecificationBuilder;
 
 /**
  * @author Duy Do

@@ -3,12 +3,16 @@
  * 
  * Copyright (c) 2012 Duy Do
  */
-package com.duydo.repository;
+package com.duydo.repository.support;
 
 import java.io.Serializable;
 
 import javax.persistence.EntityManager;
 
+import com.duydo.repository.GenericRepository;
+import com.duydo.repository.Repository;
+import com.duydo.repository.RepositoryException;
+import com.duydo.repository.SpecificationResult;
 import com.duydo.repository.spec.Specification;
 
 /**

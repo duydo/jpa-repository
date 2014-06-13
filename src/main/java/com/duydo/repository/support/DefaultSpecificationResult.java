@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.duydo.repository;
+package com.duydo.repository.support;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +36,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Root;
 
+import com.duydo.repository.SpecificationResult;
 import com.duydo.repository.spec.Specification;
 
 /**
