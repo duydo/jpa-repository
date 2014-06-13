@@ -63,7 +63,7 @@ public interface Repository {
 	<T> SpecificationResult<T> find(Class<T> clazz);
 
 	/**
-	 * Finds entities by example.
+	 * Find entities by example.
 	 * 
 	 * @return the <code>SpecificationResult</code> instance
 	 */

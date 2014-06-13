@@ -70,7 +70,6 @@ public class JpaRepository implements Repository {
     @SuppressWarnings("unchecked")
     public <T> SpecificationResult<T> find(final T example) {
         final Map<String, Object> propertyValues = ReflectionUtils.notNullPropertyValues(example);
-
         Specification<T> spec = null;
         for (Map.Entry<String, Object> entry : propertyValues.entrySet()) {
             Specification<T> tmp = SpecificationBuilder.forProperty(entry.getKey()).equal(entry.getValue()).build();
@@ -212,7 +211,7 @@ public class JpaRepository implements Repository {
      * @param entityManager the entityManager to set
      */
     public void setEntityManager(final EntityManager entityManager) {
-        this.em = entityManager;
+        this.em = PreconditionUtils.checkNotNull(entityManager);
     }
 
     protected RepositoryException newRepositoryException(final Exception e) {
